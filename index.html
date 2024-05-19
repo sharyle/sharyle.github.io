@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Robot Control & Data Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 15px 25px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:active {
+            background-color: #3e8e41;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transform: translateY(2px);
+        }
+        .data-container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Robot Control & Data Visualization</h1>
+    <div class="button-container">
+        <button onclick="sendCommand('TURN:0.5')">Turn Left</button>
+        <button onclick="sendCommand('TURN:-0.5')">Turn Right</button>
+        <button onclick="sendCommand('TURN:0')">Stop Turning</button>
+        <button onclick="sendCommand('REF:1')">Move Forward</button>
+        <button onclick="sendCommand('REF:0')">Stop</button>
+    </div>
+
+    <div class="data-container" id="data-container">
+        <!-- JSON data will be displayed here -->
+    </div>
+
+    <script>
+        function sendCommand(command) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "http://<ESP8266_IP>/" + command, true);
+            xhttp.send();
+        }
+
+        function updateData(jsonData) {
+            var dataContainer = document.getElementById('data-container');
+            var html = '<h2>Robot Data</h2>';
+            html += '<p>X1: ' + jsonData.x1 + '</p>';
+            html += '<p>X2: ' + jsonData.x2 + '</p>';
+            html += '<p>X3: ' + jsonData.x3 + '</p>';
+            html += '<p>X4: ' + jsonData.x4 + '</p>';
+            html += '<p>U: ' + jsonData.u + '</p>';
+            html += '<p>Ref: ' + jsonData.ref + '</p>';
+            dataContainer.innerHTML = html;
+        }
+
+        // Simulate receiving JSON data from ESP8266
+        var jsonDataFromESP8266 = {"x1": 10, "x2": 20, "x3": 30, "x4": 40, "u": 50, "ref": 60};
+        updateData(jsonDataFromESP8266); // Update data on page load
+    </script>
+</body>
+</html>
